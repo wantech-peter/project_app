@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- Task Stages -->
+    <record id="project_tag_unit_test" model="project.tags">
+        <field name="name">Unit test</field>
+        <field name="code">unit_test</field>
+    </record>
+    <record id="project_tag_uat" model="project.tags">
+        <field name="name">UAT</field>
+        <field name="code">uat</field>
+    </record>
+    <record id="project_tag_go_live" model="project.tags">
+        <field name="name">Go-live</field>
+        <field name="code">go_live</field>
+    </record>
+</odoo>

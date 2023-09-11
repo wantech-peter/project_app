@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_tags_tree_view_inherit" model="ir.ui.view">
+        <field name="name">tags.extend</field>
+        <field name="model">project.tags</field>
+        <field name="inherit_id" ref="project.project_tags_tree_view"/>
+        <field name="arch" type="xml">
+            <!--Hide Share Readonly button and Share Editable button-->
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="code"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

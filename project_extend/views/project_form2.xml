@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_task_view_form" model="ir.ui.view">
+        <field name="name">project.task.view.form.inherit.sale.timesheet.enterprise</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="is_in_progress"/>
+                <field name="is_review"/>
+                <field name="is_owner"/>
+                <field name="show_return"/>
+
+                <button name="complete_task" string="Complete Task" type="object" class="oe_highlight" attrs="{'invisible':[('is_owner', '=', False), ('is_in_progress', '=', False)]}"/>
+                <button name="approve_task" string="Approve" type="object" class="oe_highlight" attrs="{'invisible':[('is_owner', '=', False), ('show_return', '=', False)]}"/>
+                <button name="return_task" string="Return" type="object" class="oe_highlight" attrs="{'invisible':[('is_owner', '=', False), ('show_return', '=', False)]}"/>
+
+            </xpath>
+            <xpath expr="//label[@for='project_id']" position="before">
+                <field name="owner"/>
+            </xpath>
+            <xpath expr="//field[@name='user_ids']" position="before">
+                <field name="reviewer"/>
+            </xpath>
+            <xpath expr="//field[@name='user_ids']" position="after">
+                <field name="is_milestone_task"/>
+                <field name="man_hours_budget"/>
+            </xpath>
+            <xpath expr="//field[@name='date_deadline']" position="before">
+                <field name="custom_start_date"/>
+            </xpath>
+            <xpath expr="//page[@name='sub_tasks_page']" position="after">
+                <page name="related_task" string="Related Tasks">
+                    <field name="related_task" nolabel="1">
+                        <tree editable="bottom">
+                            <field name="name"/>
+                            <field name="project"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

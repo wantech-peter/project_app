@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Remove Add column button-->
+    <record id="view_task_kanban_inherit_project_extend" model="ir.ui.view">
+        <field name="name">project.task.kanban.inherit.project.extend</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_kanban"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="group_create">false</attribute>
+                <attribute name="js_class"></attribute>
+            </kanban>
+            <xpath expr="//div[hasclass('o_kanban_record_headings')]" position="inside">
+                <div>
+                    <span>Man Hours Budget: </span>
+                    <field name="man_hours_budget"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project.act_project_project_2_project_task_all" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">kanban,tree,form,calendar,pivot,graph,activity</field>
+        <field name="view_id" ref="project_extend.view_task_kanban_inherit_project_extend"/>
+        <field name="domain">[('display_project_id', '=', active_id)]</field>
+        <field name="context">{
+            'pivot_row_groupby': ['user_ids'],
+            'default_project_id': active_id,
+            'show_project_update': True,
+            }
+        </field>
+        <field name="search_view_id" ref="project.view_task_search_form"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No tasks found. Let's create one!
+            </p>
+            <p>
+                To get things done, use activities and status on tasks.
+                <br/>
+                Chat in real-time or by email to collaborate efficiently.
+            </p>
+        </field>
+    </record>
+
+    <record id="edit_project_inherit_project_extend" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.project.extend</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <!--Hide Share Readonly button and Share Editable button-->
+            <xpath expr="//button[@name='%(project.project_share_wizard_action)d'][1]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='%(project.project_share_wizard_action)d'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='label_tasks']" position="after">
+                <field name="is_confirmed" readonly="1"/>
+            </xpath>
+
+            <xpath expr="//header" position="inside">
+                <button name="action_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('is_confirmed', '=', True)]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="attrs">{'readonly': [('is_confirmed', '=', True)]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='date']" position="attributes">
+                <attribute name="attrs">{'readonly': [('is_confirmed', '=', True)]}</attribute>
+            </xpath>
+
+            <xpath expr="//div[@name='dates']" position="after">
+                <field name="man_hours_budget" attrs="{'readonly': [('is_confirmed', '=', True)]}"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button ps-2" icon="fa-clock-o">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="total_timesheet_hours" widget="float_time" class="mr4"/>
+                        </span>
+                        <span class="o_stat_text">Hours</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <xpath expr="//notebook" position="inside">
+                <page string="Task Stages" name="project_stages">
+                    <field name="type_ids">
+                        <tree>
+                            <field name="sequence" widget="handle" optional="show"/>
+                            <field name="name"/>
+                            <field name="fold" optional="show"/>
+                            <field name="mail_template_id" optional="show"/>
+                            <field name="rating_template_id" optional="show"/>
+                            <field
+                                    name="auto_validation_kanban_state"
+                                    optional="hide"
+                            />
+                            <field name="description" optional="hide"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Add man hour budget and total timesheet hours to project kanban view-->
+    <record id="view_project_kanban_inherited" model="ir.ui.view">
+        <field name="name">project.project.timesheet.kanban.inherited</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_kanban"/>
+        <field name="arch" type="xml">
+            <div class="o_kanban_card_manage_settings row" groups="project.group_project_manager" position="replace"></div>
+            <xpath expr="//field[@name='last_update_status']" position="after">
+                <field name="man_hours_budget"/>
+                <field name="total_timesheet_hours"/>
+            </xpath>
+            <xpath expr="//t[@t-name='kanban-box']//field[@name='tag_ids']" position="after">
+                <div class="text-muted o_row">
+                    <span class="fa fa-money" title="Man Hour Budget"></span>
+                    <field name="man_hours_budget"/>
+                </div>
+                <div class="text-muted o_row">
+                    <span class="fa fa-clock-o me-2" title="Total Hours"></span>
+                    <field name="total_timesheet_hours" widget="float_time"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="task_type_edit" model="ir.ui.view">
+        <field name="name">project.task.type.form.inherit</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_edit"/>
+        <field name="arch" type="xml">
+            <field name="fold" position="before">
+                <field name="case_default"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="task_type_tree" model="ir.ui.view">
+        <field name="name">project.task.type.tree.inherit</field>
+        <field name="model">project.task.type</field>
+        <field name="inherit_id" ref="project.task_type_tree"/>
+        <field name="arch" type="xml">
+            <field name="fold" position="before">
+                <field name="case_default"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_sale_service_inherit_project_extend" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.project.extend</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="hr_timesheet.view_task_form2_inherited"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='timesheet_ids']//tree" position="inside">
+                <field name="exclude"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project.project_share_wizard_action" model="ir.actions.act_window">
+        <field name="name">Share Project</field>
+        <field name="res_model">project.share.wizard</field>
+        <field name="binding_model_id" eval="False"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
