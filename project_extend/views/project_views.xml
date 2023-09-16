@@ -14,7 +14,7 @@
             </kanban>
             <xpath expr="//div[hasclass('o_kanban_record_headings')]" position="inside">
                 <div>
-                    <span>Man Hours Budget: </span>
+                    <span>Man Hours Budget:</span>
                     <field name="man_hours_budget"/>
                 </div>
             </xpath>
@@ -118,7 +118,18 @@
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.view_project_kanban"/>
         <field name="arch" type="xml">
-            <div class="o_kanban_card_manage_settings row" groups="project.group_project_manager" position="replace"></div>
+            <xpath expr="//div[@class='o_kanban_card_manage_settings row']" position="replace">
+                <div class="o_kanban_card_manage_settings row" groups="project_extend.group_project_team_manager" position="replace">
+                    <div role="menuitem" aria-haspopup="true" class="col-8">
+                        <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
+                    </div>
+                    <div role="menuitem" class="col-4">
+                        <a t-if="record.privacy_visibility.raw_value == 'portal'" class="dropdown-item" role="menuitem" name="%(project.project_share_wizard_action)d" type="action">Share</a>
+                        <!-- [XBO] TODO: remove the name attribute in this a tag in master -->
+                        <a class="dropdown-item" role="menuitem" type="edit" name="action_view_kanban_project">Edit</a>
+                    </div>
+                </div>
+            </xpath>
             <xpath expr="//field[@name='last_update_status']" position="after">
                 <field name="man_hours_budget"/>
                 <field name="total_timesheet_hours"/>

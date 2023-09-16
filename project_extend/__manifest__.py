@@ -7,7 +7,7 @@
     "category": "Project",
     "author": "Ranga Dharmapriya",
     "support": "rangadharmapriya@gmail.com",
-    "depends": ['sale', 'project', 'hr_timesheet', 'project_task_default_stage'],
+    "depends": ['sale', 'project', 'hr_timesheet', 'project_task_default_stage', 'sale_timesheet'],
     "data": [
         'security/project_security.xml',
         'security/ir.model.access.csv',

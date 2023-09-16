@@ -20,6 +20,14 @@ class ProjectTask(models.Model):
     show_return = fields.Boolean(string="Show Return")
     current_user = fields.Many2one("res.users", string="current user", compute='_compute_current_user')
     is_owner = fields.Boolean("Is Owner")
+    can_edit_body = fields.Boolean('Can Edit Body', compute='_compute_can_edit_body')
+
+    @api.depends_context('uid')
+    def _compute_can_edit_body(self):
+        is_lead_consultant = self.user_has_groups('project_extend.group_project_lead_consultant')
+        for item in self:
+            # is_approver and sheet.employee_id.user_id != self.env.user
+            item.can_edit_body = is_lead_consultant
 
     def _compute_current_user(self):
         self.current_user = self.env.context.get('uid', False)
