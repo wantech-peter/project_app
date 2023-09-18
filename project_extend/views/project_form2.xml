@@ -19,8 +19,9 @@
             <xpath expr="//label[@for='project_id']" position="before">
                 <field name="can_edit_body" invisible="1"/>
             </xpath>
-            <xpath expr="//field[@name='project_id']" position="attributes">
-                 <attribute name="invisible">1</attribute>
+            <xpath expr="//div[@class='oe_read_only']/field[@name='project_id']" position="replace">
+            </xpath>
+            <xpath expr="//label[@for='project_id']" position="replace">
             </xpath>
             <xpath expr="//field[@class='o_project_task_project_field oe_edit_only']" position="replace">
                 <field name="project_id" attrs="{'invisible': [('parent_id', '!=', False)],'readonly': [('can_edit_body', '=', False)]}" domain="[('active', '=', True), ('company_id', '=', company_id)]" placeholder="Private"/>
