@@ -62,6 +62,34 @@
 
             <xpath expr="//field[@name='label_tasks']" position="after">
                 <field name="is_confirmed" readonly="1"/>
+                <field name="can_edit_body_lead" invisible="1"/>
+                <field name="can_edit_body_team_manager" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit_body_team_manager', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='label_tasks']" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit_body_team_manager', '=', False)]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit_body_team_manager', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date']" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit_body_team_manager', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit_body_team_manager', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit_body_team_manager', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('can_edit_body_team_manager', '=', False)]}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="replace">
+                <field name="user_id" string="Project Manager" widget="many2one_avatar_user" attrs="{'readonly':[('can_edit_body_lead','=',False)]}" domain="[('share', '=', False)]"/>
             </xpath>
 
             <xpath expr="//header" position="inside">
@@ -69,15 +97,15 @@
             </xpath>
 
             <xpath expr="//field[@name='date_start']" position="attributes">
-                <attribute name="attrs">{'readonly': [('is_confirmed', '=', True)]}</attribute>
+                <attribute name="attrs">{'readonly': ['|',('can_edit_body_team_manager', '=', False),('is_confirmed', '=', True)]}</attribute>
             </xpath>
 
             <xpath expr="//field[@name='date']" position="attributes">
-                <attribute name="attrs">{'readonly': [('is_confirmed', '=', True)]}</attribute>
+                <attribute name="attrs">{'readonly': ['|',('can_edit_body_team_manager', '=', False),('is_confirmed', '=', True)]}</attribute>
             </xpath>
 
             <xpath expr="//div[@name='dates']" position="after">
-                <field name="man_hours_budget" attrs="{'readonly': [('is_confirmed', '=', True)]}"/>
+                <field name="man_hours_budget" attrs="{'readonly': ['|',('can_edit_body_team_manager', '=', False),('is_confirmed', '=', True)]}"/>
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
@@ -119,7 +147,7 @@
         <field name="inherit_id" ref="project.view_project_kanban"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@class='o_kanban_card_manage_settings row']" position="replace">
-                <div class="o_kanban_card_manage_settings row" groups="project_extend.group_project_team_manager" position="replace">
+                <div class="o_kanban_card_manage_settings row" groups="project_extend.group_project_lead_consultant" position="replace">
                     <div role="menuitem" aria-haspopup="true" class="col-8">
                         <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
                     </div>
