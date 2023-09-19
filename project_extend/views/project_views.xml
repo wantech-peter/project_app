@@ -93,7 +93,7 @@
             </xpath>
 
             <xpath expr="//header" position="inside">
-                <button name="action_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('is_confirmed', '=', True)]}"/>
+                <button name="action_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': ['|', ('is_confirmed', '=', True),('can_edit_body_team_manager', '=', False)]}"/>
             </xpath>
 
             <xpath expr="//field[@name='date_start']" position="attributes">
