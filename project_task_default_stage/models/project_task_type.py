@@ -13,4 +13,4 @@ class ProjectTaskType(models.Model):
         "on each new project. It will not assign this stage to existing "
         "projects.",
     )
-    code = fields.Char("Code")
+    code = fields.Char("Code", required=True, help="new, in_progress, review, done")

@@ -11,7 +11,15 @@
             <kanban position="attributes">
                 <attribute name="group_create">false</attribute>
                 <attribute name="js_class"></attribute>
+                <attribute name="quick_create">false</attribute>
+                <attribute name="records_draggable">false</attribute>
+                <attribute name="group_edit">false</attribute>
+                <attribute name="group_delete">false</attribute>
+                <attribute name="readOnlyMode">true</attribute>
             </kanban>
+            <xpath expr="//field[@name='stage_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
             <xpath expr="//div[hasclass('o_kanban_record_headings')]" position="inside">
                 <div>
                     <span>Man Hours Budget:</span>

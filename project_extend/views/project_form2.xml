@@ -6,15 +6,22 @@
         <field name="inherit_id" ref="project.view_task_form2"/>
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
+                <field name="is_draft" invisible="1"/>
                 <field name="is_in_progress" invisible="1"/>
                 <field name="is_review" invisible="1"/>
                 <field name="is_owner" invisible="1"/>
                 <field name="show_return" invisible="1"/>
-
-                <button name="complete_task" string="Complete Task" type="object" class="oe_highlight" attrs="{'invisible':[('is_owner', '=', False), ('is_in_progress', '=', False)]}"/>
-                <button name="approve_task" string="Approve" type="object" class="oe_highlight" attrs="{'invisible':[('is_owner', '=', False), ('show_return', '=', False)]}"/>
-                <button name="return_task" string="Return" type="object" class="oe_highlight" attrs="{'invisible':[('is_owner', '=', False), ('show_return', '=', False)]}"/>
-
+                <field name="current_user" invisible="1"/>
+                <button name="start_task" string="Start Task" type="object" class="oe_highlight" attrs="{'invisible': &quot;['|', ('user_ids', 'not in', uid), ('is_draft', '=', False)]&quot;}"/>
+                <button name="complete_task" string="Complete Task" type="object" class="oe_highlight" attrs="{'invisible':&quot;['|', ('user_ids', 'not in', uid), ('is_in_progress', '=', False)]&quot;}"/>
+                <button name="approve_task" string="Approve" type="object" class="oe_highlight" attrs="{'invisible': &quot;['|', ('user_ids', 'not in', uid), ('show_return', '=', False)]&quot;}"/>
+                <button name="return_task" string="Return" type="object" class="oe_highlight" attrs="{'invisible':&quot;['|', ('user_ids', 'not in', uid), ('show_return', '=', False)]&quot;}"/>
+            </xpath>
+            <xpath expr="//field[@name='stage_id']" position="replace">
+                <field name="stage_id" widget="statusbar" options="{'fold_field': 'fold'}" attrs="{'invisible': [('project_id', '=', False), ('stage_id', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//button[@name='action_assign_to_me']" position="attributes">
+                <attribute name="attrs">{'invisible' : 1}</attribute>
             </xpath>
             <xpath expr="//label[@for='project_id']" position="before">
                 <field name="can_edit_body" invisible="1"/>
@@ -73,12 +80,12 @@
             </xpath>
         </field>
     </record>
-<!--    <record id="portal_share_action" model="ir.actions.act_window">-->
-<!--        <field name="name">Share</field>-->
-<!--        <field name="res_model">portal.share</field>-->
-<!--        <field name="view_mode">form</field>-->
-<!--        <field name="target">new</field>-->
-<!--        <field name="binding_model_id" ref="model_project_task"/>-->
-<!--        <field name="binding_view_types">form</field>-->
-<!--    </record>-->
+    <!--    <record id="portal_share_action" model="ir.actions.act_window">-->
+    <!--        <field name="name">Share</field>-->
+    <!--        <field name="res_model">portal.share</field>-->
+    <!--        <field name="view_mode">form</field>-->
+    <!--        <field name="target">new</field>-->
+    <!--        <field name="binding_model_id" ref="model_project_task"/>-->
+    <!--        <field name="binding_view_types">form</field>-->
+    <!--    </record>-->
 </odoo>

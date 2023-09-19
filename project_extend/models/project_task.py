@@ -19,7 +19,7 @@ class ProjectTask(models.Model):
     is_draft = fields.Boolean(string="Is Draft", default=True)
     show_return = fields.Boolean(string="Show Return")
     current_user = fields.Many2one("res.users", string="current user", compute='_compute_current_user')
-    is_owner = fields.Boolean("Is Owner")
+    is_owner = fields.Boolean("Is Owner", compute='_compute_is_owner')
     can_edit_body = fields.Boolean('Can Edit Body', compute='_compute_can_edit_body')
 
     @api.depends_context('uid')
@@ -31,15 +31,27 @@ class ProjectTask(models.Model):
 
     def _compute_current_user(self):
         self.current_user = self.env.context.get('uid', False)
-        if self.owner == self.current_user:
+
+    def _compute_is_owner(self):
+        current_user = self.env.context.get('uid', False)
+        if current_user in self.user_ids.ids:
             self.is_owner = True
         else:
             self.is_owner = False
+
+    def start_task(self):
+        project_stage_list = self.project_id.type_ids.filtered(lambda line: line.code == 'in_progress')
+        if project_stage_list:
+            self.stage_id = project_stage_list[0].id
+            self._compute_is_in_progress()
+        else:
+            raise UserError(_("The In Progress stage is not in this project. Please add it first."))
 
     def complete_task(self):
         project_stage_list = self.project_id.type_ids.filtered(lambda line: line.code == 'review')
         if project_stage_list:
             self.stage_id = project_stage_list[0].id
+            self._compute_is_in_progress()
         else:
             raise UserError(_("The Review stage is not in this project. Please add it first."))
 
@@ -63,6 +75,7 @@ class ProjectTask(models.Model):
         project_stage_list = self.project_id.type_ids.filtered(lambda line: line.code == 'done')
         if project_stage_list:
             self.stage_id = project_stage_list[0].id
+            self._compute_is_in_progress()
         else:
             raise UserError(_("The Done stage is not in this project. Please add it first."))
 
@@ -70,15 +83,19 @@ class ProjectTask(models.Model):
         self.is_in_progress = False
         self.is_review = False
         self.show_return = False
-        if self.stage_id.code == "in_progress":
+        self.is_draft = True
+        if self.stage_id.code == "new":
+            self.is_in_progress = False
+            self.is_review = False
+        elif self.stage_id.code == "in_progress":
+            self.is_draft = False
             self.is_in_progress = True
             self.is_review = False
-            self.is_draft = False
         elif self.stage_id.code == "review":
+            self.is_draft = False
             self.is_in_progress = False
             self.is_review = True
             self.show_return = True
-            self.is_draft = False
         elif self.stage_id.code in ["done", 'cancelled']:
             self.is_draft = False
         asd = 123
