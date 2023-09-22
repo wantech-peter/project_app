@@ -41,11 +41,16 @@ class ProjectTask(models.Model):
 
     def start_task(self):
         project_stage_list = self.project_id.type_ids.filtered(lambda line: line.code == 'in_progress')
-        if project_stage_list:
+        if not project_stage_list:
+            raise UserError(_("The In Progress stage is not in this project. Please add it first."))
+
+        project_stage_done = self.project_id.type_ids.filtered(lambda line: line.code == 'done')
+        no_all_project_task_done = self.depend_on_ids.filtered(lambda line: line.stage_id.id not in project_stage_done.ids)
+        if no_all_project_task_done:
+            raise UserError(_("Please make sure Blocked By Tag List Task be done first."))
+        else:
             self.stage_id = project_stage_list[0].id
             self._compute_is_in_progress()
-        else:
-            raise UserError(_("The In Progress stage is not in this project. Please add it first."))
 
     def complete_task(self):
         project_stage_list = self.project_id.type_ids.filtered(lambda line: line.code == 'review')

@@ -45,6 +45,7 @@
             </xpath>
 
             <xpath expr="//field[@name='user_ids']" position="after">
+                <field name="reviewer" attrs="{'readonly': [('can_edit_body', '=', False)]}"/>
                 <field name="is_milestone_task"/>
                 <field name="man_hours_budget"/>
             </xpath>
